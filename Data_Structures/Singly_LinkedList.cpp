@@ -186,3 +186,79 @@ void instructions()
          << "6 to report the number of elements\n"
          << "7 to end list processing\n";
 }
+int main() 
+{
+    List myList;
+    instructions();
+    int choice;
+    double data;
+    do 
+    {
+        cout << "? ";
+        cin >> choice;
+        switch (choice) 
+        {
+            case 1:
+                cout << "Enter number: ";
+                cin >> data;
+                myList.insertAtFront(data);
+                myList.print();
+                break;
+            case 2:
+                cout << "Enter number: ";
+                cin >> data;
+                myList.insertAtBack(data);
+                myList.print();
+                break;
+            case 3:
+                if (myList.removeFromFront(data))
+                {
+                    cout << data << " was removed from the front of the list." << endl;
+                    myList.print();
+                }
+                else 
+                {
+                    cout << "List is empty." << endl;
+                }
+                break;
+            case 4:
+                if (myList.removeFromBack(data)) 
+                {
+                    cout << data << " was removed from the back of the list." << endl;
+                    myList.print();
+                }
+                else
+                {
+                    cout << "List is empty." << endl;
+                }
+                break;
+            case 5:
+                size_t idx;
+                cout << "Enter value: ";
+                cin >> data;
+                cout << "Enter index: ";
+                cin >> idx;
+                if (myList.insertAfterIndex(idx, data)) 
+                {
+                    cout << data << " was added after index " << idx << "." << endl;
+                    myList.print();
+                }
+                else
+                {
+                    cout << "Insertion failed. Invalid index or list is empty." << endl;
+                }
+                break;
+            case 6:
+                cout << "Number of elements in the list: " << myList.getElementCount() << endl;
+                break;
+            case 7:
+                cout << "End of program." << endl;
+                break; 
+      default:
+                cout << "Pordzeq krkin" << endl;
+                instructions();
+                break;
+        }
+    } while (choice != 7);
+    return 0; 
+}
