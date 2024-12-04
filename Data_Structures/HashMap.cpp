@@ -148,3 +148,30 @@ int main() {
                 cout << "\nThe contents of the hash table:\n";
                 map.display();
                 break;
+            case '2':
+                cout << "Mutqagreq key search-i hamar: ";
+                cin >> key;
+                if (map.search(key, value)) {
+                    cout << "For "<< key << "key is " << value <<" value"<<endl;
+                } else {
+                    cout << key << "key is not found.\n";
+                }
+                break;
+
+            case '3':
+                cout << "Enter a key for remove: ";
+                cin >> key;
+                map.remove(key);
+                break;
+
+            case '4':
+                cout << "Exiting...\n";
+                break;
+
+            default:
+                cout << "Invalid choice. Try again.\n";
+        }
+    } while (choice != '4');
+
+    return 0;
+}
