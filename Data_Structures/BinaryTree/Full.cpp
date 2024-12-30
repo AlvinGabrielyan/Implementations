@@ -1,4 +1,3 @@
-
 #include <iostream>
 using namespace std;
 
@@ -15,7 +14,6 @@ class FullBinaryTree {
 private:
     TreeNode* root;
 
-    // Helper function to insert a node recursively
     TreeNode* insertNode(TreeNode* node, int value) {
         if (!node) return new TreeNode(value);
 
@@ -30,7 +28,6 @@ private:
         return node;
     }
 
-    // Helper function to delete a node recursively
     TreeNode* deleteNode(TreeNode* node, int value) {
         if (!node) return nullptr;
 
@@ -40,8 +37,7 @@ private:
                 return nullptr;
             }
 
-            // If the node has one child, replace it with the child
-            if (!node->left || !node->right) {
+                if (!node->left || !node->right) {
                 TreeNode* child = node->left ? node->left : node->right;
                 delete node;
                 return child;
@@ -54,11 +50,9 @@ private:
         return node;
     }
 
-    // Helper function to check if the tree is full
     bool isFullBinaryTreeHelper(TreeNode* node) const {
         if (!node) return true;
 
-        // If the node has one child, it's not a full binary tree
         if ((node->left && !node->right) || (!node->left && node->right)) {
             return false;
         }
@@ -66,15 +60,13 @@ private:
         return isFullBinaryTreeHelper(node->left) && isFullBinaryTreeHelper(node->right);
     }
 
-    // Print tree in pre-order traversal
-    void printTreePreOrder(TreeNode* node) const {
+       void printTreePreOrder(TreeNode* node) const {
         if (!node) return;
         cout << node->val << " ";
         printTreePreOrder(node->left);
         printTreePreOrder(node->right);
     }
 
-    // Destructor to clean up the memory
     void clearTree(TreeNode* node) {
         if (!node) return;
         clearTree(node->left);
@@ -85,29 +77,26 @@ private:
 public:
     FullBinaryTree() : root(nullptr) {}
 
-    // Public function to insert a value into the tree
     void insert(int value) {
         root = insertNode(root, value);
         cout << "Inserted value: " << value << endl;
     }
 
-    // Public function to delete a value from the tree
     void deleteValue(int value) {
         root = deleteNode(root, value);
         cout << "Deleted value: " << value << endl;
     }
 
-    // Public function to search for a value in the tree
-    bool search(int value) const {
-        TreeNode* current = root;
-        while (current) {
-            if (current->val == value) return true;
-            current = (current->val > value) ? current->left : current->right;
-        }
-        return false;
+    bool searchHelper(TreeNode* node, int value) const {
+        if (!node) return false;
+        if (node->val == value) return true;
+        return searchHelper(node->left, value) || searchHelper(node->right, value);
     }
-
-    // Public function to check if the tree is a full binary tree
+    
+    bool search(int value) const {
+        return searchHelper(root, value);
+    }
+ 
     bool isFullBinaryTree() const {
         if (isFullBinaryTreeHelper(root)) {
             cout << "The tree is a full binary tree.\n";
@@ -118,14 +107,12 @@ public:
         }
     }
 
-    // Print tree (pre-order)
     void printTree() const {
         cout << "Tree (pre-order traversal): ";
         printTreePreOrder(root);
         cout << endl;
     }
 
-    // Destructor to clear tree
     ~FullBinaryTree() {
         clearTree(root);
     }
