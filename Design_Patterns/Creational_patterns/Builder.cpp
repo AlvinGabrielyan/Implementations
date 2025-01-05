@@ -1,3 +1,11 @@
+//Սրա նպատակն էնա, որ ամեն անգամ ինչն ուզենք էդ էլ set անենք, ուղղակի ․ դնելով, մոտավոր կասկադային կանչ ենք իրականացնում,
+հակառակ դեպքում կոնստրուկտորում պետք է ամեն անգամ սեթ անեինք հերթով փոփոխականները,
+ու ամեն անգամ պետք ա վերանայենք, հերթականությունը չխախտենք և այլն, ստեղ որն ուզում ենք, էդ ենք սեթ անում։(this.setRam.setHdd.setSSD.և այլն)
+Վերջում էլ ինչ դրել ենք մեր builder մեջ, բերում դնում ենք համապատասխան կանստրուկտորի մեջ(computer-ը nested ա)
+   /* this.HDD=builder.HDD;
+		this.RAM=builder.RAM;
+		this.isGraphicsCardEnabled=builder.isGraphicsCardEnabled;
+		this.isBluetoothEnabled=builder.isBluetoothEnabled;*/
 
 #include <iostream>
 #include <string>
