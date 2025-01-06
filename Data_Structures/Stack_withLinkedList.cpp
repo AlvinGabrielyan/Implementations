@@ -1,5 +1,5 @@
-#include <bits/stdc++.h>
-/*Instead, we could include <iostream>, <vector>, <algorithm> libraries*/
+#include <iostream>
+#include <climits>
 using namespace std;
 
 class Node{
