@@ -1,6 +1,4 @@
 #include <iostream> 
-#include <vector>    
-#include <algorithm> 
 using namespace std;
 
 #define MAX 1000
