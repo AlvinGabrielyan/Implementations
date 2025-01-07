@@ -1,73 +1,53 @@
-
 #include <iostream>
-#include <string>
 using namespace std;
 
-class PaymentStrategy {
+// Strategy interface
+class SortStrategy {
 public:
-    virtual void pay(int amount) const = 0;
-    virtual ~PaymentStrategy() {}
+    virtual void sort() const = 0;
 };
 
-class CreditCardPayment : public PaymentStrategy {
-private:
-    string name;
-    string cardNumber;
-    string cvv;
-
+// Concrete Strategy 1: BubbleSort
+class BubbleSort : public SortStrategy {
 public:
-    CreditCardPayment(const string& name, const string& cardNumber, const string& cvv)
-        : name(name), cardNumber(cardNumber), cvv(cvv) {}
-
-    void pay(int amount) const override {
-        cout << "Paid " << amount << " using Credit Card (Name: " << name << ")." << endl;
+    void sort() const override {
+        cout << "Sorting using Bubble Sort" << endl;
     }
 };
 
-class PayPalPayment : public PaymentStrategy {
-private:
-    string email;
-
+// Concrete Strategy 2: QuickSort
+class QuickSort : public SortStrategy {
 public:
-    PayPalPayment(const string& email) : email(email) {}
-
-    void pay(int amount) const override {
-        cout << "Paid " << amount << " using PayPal (Email: " << email << ")." << endl;
+    void sort() const override {
+        cout << "Sorting using Quick Sort" << endl;
     }
 };
 
-class PaymentProcessor {
+class Context {
 private:
-    PaymentStrategy* strategy; 
+    SortStrategy* strategy;  
 
 public:
-    PaymentProcessor(PaymentStrategy* strategy) : strategy(strategy) {}
-
-    void setStrategy(PaymentStrategy* newStrategy) {
+      void setStrategy(SortStrategy* newStrategy) {
         strategy = newStrategy;
     }
 
-    void processPayment(int amount) const {
-        if (strategy) {
-            strategy->pay(amount);
-        } else {
-            cout << "No payment strategy selected!" << endl;
-        }
+       void executeStrategy() const {
+        strategy->sort();
     }
 };
 
 int main() {
-    CreditCardPayment creditCard("Alice", "1234-5678-9876-5432", "123");
-    PayPalPayment paypal("alice@example.com");
-
-    PaymentProcessor processor(&creditCard);
-
-    cout << "Processing with Credit Card:" << endl;
-    processor.processPayment(100);
-
-    cout << "\nSwitching to PayPal:" << endl;
-    processor.setStrategy(&paypal);
-    processor.processPayment(200);
+    Context context;
+    
+    BubbleSort bubbleSort;
+    QuickSort quickSort;
+    
+    context.setStrategy(&bubbleSort);
+    context.executeStrategy();
+    
+    context.setStrategy(&quickSort);
+    context.executeStrategy();
 
     return 0;
 }
