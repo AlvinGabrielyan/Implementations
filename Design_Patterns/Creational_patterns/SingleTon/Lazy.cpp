@@ -16,7 +16,7 @@ public:
     }
 
     void showMessage() {
-        std::cout << "Lazy Singleton: Hello World!" << std::endl;
+        cout << "Lazy Singleton: Hello World!" << endl;
     }
 
     LazySingleton(const LazySingleton&) = delete;
