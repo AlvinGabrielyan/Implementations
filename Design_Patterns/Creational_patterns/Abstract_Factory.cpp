@@ -2,100 +2,56 @@
 #include <memory>
 
 using namespace std;
-class Button {
+
+class Animal {
 public:
-    virtual void render() const = 0;
-    virtual ~Button() = default;
+    virtual void sound() const = 0; 
+    virtual ~Animal() = default;
 };
 
-class WindowsButton : public Button {
+class Cat : public Animal {
 public:
-    void render() const override {
-        cout << "Rendering Windows Button\n";
+    void sound() const override {
+        cout << "Meow!" << endl;
     }
 };
 
-class MacButton : public Button {
+class Dog : public Animal {
 public:
-    void render() const override {
-        cout << "Rendering Mac Button\n";
+    void sound() const override {
+        cout << "Woof!" << endl;
     }
 };
 
-class Checkbox {
+class AnimalFactory {
 public:
-    virtual void render() const = 0;
-    virtual ~Checkbox() = default;
+    virtual unique_ptr<Animal> createAnimal() const = 0;  
+    virtual ~AnimalFactory() = default;
 };
 
-class WindowsCheckbox : public Checkbox {
+class CatFactory : public AnimalFactory {
 public:
-    void render() const override {
-        cout << "Rendering Windows Checkbox\n";
+    unique_ptr<Animal> createAnimal() const override {
+        return make_unique<Cat>(); 
     }
 };
 
-class MacCheckbox : public Checkbox {
+class DogFactory : public AnimalFactory {
 public:
-    void render() const override {
-        cout << "Rendering Mac Checkbox\n";
-    }
-};
-
-// Abstract Factory
-class GUIFactory {
-public:
-    virtual unique_ptr<Button> createButton() const = 0;// Pure virtual function
-    virtual ~GUIFactory() = default;
-};
-
-class WindowsFactory : public GUIFactory {
-public:
-    unique_ptr<Button> createButton() const override {
-        return make_unique<WindowsButton>();
-    }
-    unique_ptr<Checkbox> createCheckbox() const override {
-        return make_unique<WindowsCheckbox>();
-    }
-};
-
-class MacFactory : public GUIFactory {
-public:
-    unique_ptr<Button> createButton() const override {
-        return make_unique<MacButton>();
-    }
-    unique_ptr<Checkbox> createCheckbox() const override {
-        return make_unique<MacCheckbox>();
-    }
-};
-
-class Application {
-private:
-    unique_ptr<GUIFactory> factory;
-
-public:
-    Application(unique_ptr<GUIFactory> f) : factory(move(f)) {}
-
-    void renderUI() {
-        auto button = factory->createButton();
-        auto checkbox = factory->createCheckbox();
-
-        button->render();
-        checkbox->render();
+    unique_ptr<Animal> createAnimal() const override {
+        return make_unique<Dog>(); 
     }
 };
 
 int main() {
-    unique_ptr<GUIFactory> windowsFactory = make_unique<WindowsFactory>();
-    Application windowsApp(move(windowsFactory));
-    cout << "Windows Application UI:\n";
-    windowsApp.renderUI();
+    unique_ptr<AnimalFactory> catFactory = make_unique<CatFactory>();
+    unique_ptr<AnimalFactory> dogFactory = make_unique<DogFactory>();
 
-    unique_ptr<GUIFactory> macFactory = make_unique<MacFactory>();
-    Application macApp(move(macFactory));
-    cout << "\nMac Application UI:\n";
-    macApp.renderUI();
+    unique_ptr<Animal> cat = catFactory->createAnimal();
+    unique_ptr<Animal> dog = dogFactory->createAnimal();
+
+    cat->sound(); 
+    dog->sound(); 
 
     return 0;
 }
-
