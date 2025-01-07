@@ -1,3 +1,4 @@
+//Kamurj a handisanum erku mimyanc het anhamatexeli classneri interface-eri kam hamakargeri mijev
 #include <iostream>
 using namespace std;
 
