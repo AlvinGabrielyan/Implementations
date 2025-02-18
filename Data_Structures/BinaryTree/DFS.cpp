@@ -1,3 +1,4 @@
+//Temporary queue-i mej put enq root-y, stugum enq, ete children chuni, iran uxarkum enq result queue-i mej, ete uni left child, leftin put enq anum temp-i mej, parent-in result.
 #include <iostream>
 #include <deque>
 #include <queue>
