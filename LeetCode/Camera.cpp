@@ -31,7 +31,7 @@ private:
             cameras++;
             return 1; 
         }
-        
+        //Ete childeric gone meky uni kamera, nody darnuma covered
         if (left == 1 || right == 1) {
             return 2;
         }
