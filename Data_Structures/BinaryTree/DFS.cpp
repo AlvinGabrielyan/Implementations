@@ -1,7 +1,8 @@
-//Temporary queue-i mej put enq root-y, stugum enq, ete children chuni, iran uxarkum enq result queue-i mej, ete uni left child, leftin put enq anum temp-i mej, parent-in result.
+/*Temporary queue-i mej put enq root-y, stugum enq, ete children chuni, iran uxarkum enq result queue-i mej,
+ete uni left child, leftin put enq anum temp-i mej, parent-in result.*/
+
 #include <iostream>
 #include <deque>
-#include <queue>
 #include <vector>
 
 using namespace std;
@@ -14,37 +15,28 @@ struct Node {
     Node(int val) : value(val), left(nullptr), right(nullptr) {}
 };
 
-vector<int> dfs_two_queues(Node* root) {
+vector<int> dfs_using_queues(Node* root) {
     vector<int> result;
     if (!root) return result;
     
-    deque<Node*> temp_queue;   
-    queue<int> result_queue;  
-    
-    temp_queue.push_front(root);
+    deque<Node*> temp_queue;
+    temp_queue.push_back(root);
     
     while (!temp_queue.empty()) {
-        Node* current = temp_queue.front();
-        temp_queue.pop_front();
+        Node* current = temp_queue.back();
+        temp_queue.pop_back(); 
+        result.push_back(current->value);
         
-        result_queue.push(current->value);
-
         if (current->right) {
-            temp_queue.push_front(current->right);
+            temp_queue.push_back(current->right);
         }
         if (current->left) {
-            temp_queue.push_front(current->left);
+            temp_queue.push_back(current->left);
         }
-    }
-    
-    while (!result_queue.empty()) {
-        result.push_back(result_queue.front());
-        result_queue.pop();
     }
     
     return result;
 }
-
 
 Node* create_sample_tree() {
     Node* root = new Node(1);
@@ -67,7 +59,7 @@ void delete_tree(Node* root) {
 
 int main() {
     Node* tree = create_sample_tree();
-    vector<int> result = dfs_two_queues(tree);
+    vector<int> result = dfs_using_queues(tree);
     
     cout << "DFS Traversal: ";
     for (int value : result) {
