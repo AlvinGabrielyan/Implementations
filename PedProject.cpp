@@ -1,5 +1,3 @@
-// Brain Quest - Educational Game
-
 #include <iostream>
 #include <vector>
 #include <string>
@@ -8,9 +6,14 @@
 #include <algorithm>
 #include <cstdlib>
 #include <random>
+#include <chrono>
+#include <thread>
+#include <future>
+#include <atomic>
 
 #define GREEN_TEXT "\033[1;32m"
 #define RED_TEXT "\033[1;31m"
+#define YELLOW_TEXT "\033[1;33m"
 #define RESET_TEXT "\033[0m"
 
 using namespace std;
@@ -107,7 +110,6 @@ It maintains a list of words and their definitions, which change based on the pl
 The game mechanics involve guessing letters in Hangman and unscrambling words in Word Scramble, rewarding players with points for correct answers.
 
 */
-
 
 class WordGame : public Game {
 private:
@@ -337,6 +339,7 @@ public:
     }
 };
 
+
 /*
 
 The LogicGame class includes puzzles that test players' reasoning and pattern-recognition skills.
@@ -348,8 +351,38 @@ Players earn points based on difficulty level when they correctly solve a puzzle
 
 class LogicGame : public Game {
 private:
+    template<typename T>
+    bool getInputWithTimeout(T& input, int timeoutSeconds) {
+        atomic<bool> inputProvided(false);
+
+        auto future = async(launch::async, [&input, &inputProvided]() {
+            cin >> input;
+            inputProvided = true;
+            return true;
+            });
+
+        for (int i = 0; i < timeoutSeconds; i++) {
+            if (inputProvided) {
+                future.wait_for(chrono::seconds(0));
+                return true;
+            }
+
+            cout << "\rTime remaining: " << (timeoutSeconds - i) << " seconds..." << flush;
+            this_thread::sleep_for(chrono::seconds(1));
+        }
+
+        cout << "\r" << YELLOW_TEXT << "Time's up! Moving to the next question..." << RESET_TEXT << endl;
+
+        cin.clear();
+        string dummy;
+        getline(cin, dummy);
+
+        return false;
+    }
+
     void patternGame(Player& player) {
         cout << "\n=== PATTERN GAME ===" << endl;
+        cout << YELLOW_TEXT << "You have 7 seconds to answer each question!" << RESET_TEXT << endl;
 
         vector<int> pattern;
         int length = 4 + difficulty * 2;
@@ -370,21 +403,26 @@ private:
         int answer = pattern[length - 1];
         int guess;
         cout << "Your answer: ";
-        cin >> guess;
 
-        if (guess == answer) {
-            cout << GREEN_TEXT << "Correct! The next number is " << answer << RESET_TEXT << endl;
-            int points = 10 * difficulty;
-            player.addPoints(points);
-            cout << GREEN_TEXT << "You earned " << points << " points!" << RESET_TEXT << endl;
+        if (getInputWithTimeout(guess, 7)) {
+            if (guess == answer) {
+                cout << GREEN_TEXT << "Correct! The next number is " << answer << RESET_TEXT << endl;
+                int points = 10 * difficulty;
+                player.addPoints(points);
+                cout << GREEN_TEXT << "You earned " << points << " points!" << RESET_TEXT << endl;
+            }
+            else {
+                cout << RED_TEXT << "Incorrect. The next number was " << answer << RESET_TEXT << endl;
+            }
         }
         else {
-            cout << RED_TEXT << "Incorrect. The next number was " << answer << RESET_TEXT << endl;
+            cout << "The correct answer was: " << answer << endl;
         }
     }
 
     void sequenceGame(Player& player) {
         cout << "\n=== SEQUENCE GAME ===" << endl;
+        cout << YELLOW_TEXT << "You have 7 seconds to answer each question!" << RESET_TEXT << endl;
 
         vector<int> sequence;
         int length = 3 + difficulty * 2;
@@ -405,20 +443,27 @@ private:
         int answer1 = sequence[length - 2];
         int answer2 = sequence[length - 1];
         int guess1, guess2;
+        bool answered = false;
 
         cout << "First number: ";
-        cin >> guess1;
-        cout << "Second number: ";
-        cin >> guess2;
-
-        if (guess1 == answer1 && guess2 == answer2) {
-            cout << GREEN_TEXT << "Correct! The next numbers are " << answer1 << " and " << answer2 << RESET_TEXT << endl;
-            int points = 15 * difficulty;
-            player.addPoints(points);
-            cout << GREEN_TEXT << "You earned " << points << " points!" << RESET_TEXT << endl;
+        if (getInputWithTimeout(guess1, 7)) {
+            cout << "Second number: ";
+            if (getInputWithTimeout(guess2, 7)) {
+                answered = true;
+                if (guess1 == answer1 && guess2 == answer2) {
+                    cout << GREEN_TEXT << "Correct! The next numbers are " << answer1 << " and " << answer2 << RESET_TEXT << endl;
+                    int points = 15 * difficulty;
+                    player.addPoints(points);
+                    cout << GREEN_TEXT << "You earned " << points << " points!" << RESET_TEXT << endl;
+                }
+                else {
+                    cout << RED_TEXT << "Incorrect. The next numbers were " << answer1 << " and " << answer2 << RESET_TEXT << endl;
+                }
+            }
         }
-        else {
-            cout << RED_TEXT << "Incorrect. The next numbers were " << answer1 << " and " << answer2 << RESET_TEXT << endl;
+
+        if (!answered) {
+            cout << "The correct answers were: " << answer1 << " and " << answer2 << endl;
         }
     }
 
@@ -453,8 +498,10 @@ public:
         cout << "Pattern Game: Find the next number in a mathematical pattern." << endl;
         cout << "Sequence Game: Find the next two numbers in a sequence." << endl;
         cout << "Think carefully about the mathematical relationships!" << endl;
+        cout << YELLOW_TEXT << "Note: You have 7 seconds to answer each question!" << RESET_TEXT << endl;
     }
 };
+
 
 /*
 
@@ -467,8 +514,38 @@ The difficulty increases as the player progresses, introducing more complex calc
 
 class MathGame : public Game {
 private:
+    template<typename T>
+    bool getInputWithTimeout(T& input, int timeoutSeconds) {
+        atomic<bool> inputProvided(false);
+
+        auto future = async(launch::async, [&input, &inputProvided]() {
+            cin >> input;
+            inputProvided = true;
+            return true;
+            });
+
+        for (int i = 0; i < timeoutSeconds; i++) {
+            if (inputProvided) {
+                future.wait_for(chrono::seconds(0));
+                return true;
+            }
+
+            cout << "\rTime remaining: " << (timeoutSeconds - i) << " seconds..." << flush;
+            this_thread::sleep_for(chrono::seconds(1));
+        }
+
+        cout << "\r" << YELLOW_TEXT << "Time's up! Moving to the next question..." << RESET_TEXT << endl;
+
+        cin.clear();
+        string dummy;
+        getline(cin, dummy);
+
+        return false;
+    }
+
     void arithmeticGame(Player& player) {
         cout << "\n=== ARITHMETIC GAME ===" << endl;
+        cout << YELLOW_TEXT << "You have 3 seconds to answer each question!" << RESET_TEXT << endl;
 
         int questions = 5 * difficulty;
         int correct = 0;
@@ -509,14 +586,18 @@ private:
 
             int answer;
             cout << "Your answer: ";
-            cin >> answer;
 
-            if (answer == correctAnswer) {
-                cout << GREEN_TEXT << "Correct!" << RESET_TEXT << endl;
-                correct++;
+            if (getInputWithTimeout(answer, 3)) {
+                if (answer == correctAnswer) {
+                    cout << GREEN_TEXT << "Correct!" << RESET_TEXT << endl;
+                    correct++;
+                }
+                else {
+                    cout << RED_TEXT << "Wrong! The correct answer is " << correctAnswer << RESET_TEXT << endl;
+                }
             }
             else {
-                cout << RED_TEXT << "Wrong! The correct answer is " << correctAnswer << RESET_TEXT << endl;
+                cout << "The correct answer was: " << correctAnswer << endl;
             }
         }
 
@@ -528,6 +609,7 @@ private:
 
     void multiplicationTableGame(Player& player) {
         cout << "\n=== MULTIPLICATION TABLE GAME ===" << endl;
+        cout << YELLOW_TEXT << "You have 3 seconds to answer each question!" << RESET_TEXT << endl;
 
         int questions = 5 * difficulty;
         int correct = 0;
@@ -542,14 +624,18 @@ private:
 
             int answer;
             cout << "Your answer: ";
-            cin >> answer;
 
-            if (answer == correctAnswer) {
-                cout << GREEN_TEXT << "Correct!" << RESET_TEXT << endl;
-                correct++;
+            if (getInputWithTimeout(answer, 3)) {
+                if (answer == correctAnswer) {
+                    cout << GREEN_TEXT << "Correct!" << RESET_TEXT << endl;
+                    correct++;
+                }
+                else {
+                    cout << RED_TEXT << "Wrong! The correct answer is " << correctAnswer << RESET_TEXT << endl;
+                }
             }
             else {
-                cout << RED_TEXT << "Wrong! The correct answer is " << correctAnswer << RESET_TEXT << endl;
+                cout << "The correct answer was: " << correctAnswer << endl;
             }
         }
 
@@ -590,6 +676,7 @@ public:
         cout << "Arithmetic Game: Solve various math problems with +, -, *, and /." << endl;
         cout << "Multiplication Table Game: Test your multiplication skills." << endl;
         cout << "Higher difficulty levels include more complex operations!" << endl;
+        cout << YELLOW_TEXT << "Note: You have 3 seconds to answer each question!" << RESET_TEXT << endl;
     }
 };
 
