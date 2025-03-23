@@ -70,8 +70,10 @@ Node* insert(Node* p, int k) {
     
     if (k < p->key)
         p->left = insert(p->left, k);
-    else
+    else if (k > p->key)
         p->right = insert(p->right, k);
+    else 
+        return p; 
     
     return balance(p);
 }
@@ -94,7 +96,7 @@ Node* remove(Node* p, int k) {
         p->left = remove(p->left, k);
     else if (k > p->key)
         p->right = remove(p->right, k);
-    else { // k == p->key
+    else {
         Node* q = p->left;
         Node* r = p->right;
         delete p;
@@ -109,26 +111,16 @@ Node* remove(Node* p, int k) {
     return balance(p);
 }
 
-void printInOrder(Node* root) {
-    if (root) {
-        printInOrder(root->left);
-        cout << root->key << " ";
-        printInOrder(root->right);
-    }
-}
-
-void printTree(Node* root, string indent = "", bool last = true) {
+void printTree(Node* root, string indent = "", char position = ' ') {
     if (root) {
         cout << indent;
-        cout << (last ? "└── " : "├── ");
-        cout << root->key << " (h=" << (int)root->height << ", bf=" << bfactor(root) << ")" << endl;
-        
-        indent += last ? "    " : "│   ";
-        
-        printTree(root->left, indent, !root->right);
-        if (root->right) {
-            printTree(root->right, indent, true);
+        if (position != ' ') {
+            cout << "(" << position << ") ";
         }
+        cout << root->key << " (h=" << (int)root->height << ", bf=" << bfactor(root) << ")\n";
+        
+        printTree(root->left, indent + "    ", 'L');
+        printTree(root->right, indent + "    ", 'R');
     }
 }
 
@@ -140,65 +132,34 @@ void deleteTree(Node* root) {
     }
 }
 
-void solveProblem1() {
-    cout << "\n--- Problem 1: Inserting decreasing sequence ---\n";
-    Node* root = nullptr;
-    
-    cout << "Inserting 50\n";
-    root = insert(root, 50);
-    printTree(root);
-    
-    cout << "\nInserting 40\n";
-    root = insert(root, 40);
-    printTree(root);
-    
-    cout << "\nInserting 30 (should trigger right rotation at 50)\n";
-    root = insert(root, 30);
-    printTree(root);
-    
-    deleteTree(root);
-}
-
-void solveProblem2() {
-    cout << "\n--- Problem 2: Inserting nodes with LL-rotation ---\n";
-    Node* root = nullptr;
-    vector<int> keys = {60, 50, 70, 40, 55, 30};
-    
-    for (int i = 0; i < keys.size(); i++) {
-        cout << "\nInserting " << keys[i];
-        if (keys[i] == 30) cout << " (should trigger right rotation at 50)";
-        cout << "\n";
-        
-        root = insert(root, keys[i]);
-        printTree(root);
-    }
-    
-    deleteTree(root);
-}
-
-void solveProblem3() {
-    cout << "\n--- Problem 3: Multiple LL rotations in large tree ---\n";
-    Node* root = nullptr;
-    vector<int> keys = {100, 90, 80, 70, 60, 50};
-    
-    for (int i = 0; i < keys.size(); i++) {
-        cout << "\nInserting " << keys[i];
-        if (keys[i] == 80) cout << " (should trigger right rotation at 100)";
-        if (keys[i] == 70) cout << " (should trigger right rotation at 90)";
-        if (keys[i] == 60) cout << " (should trigger right rotation at 80)";
-        cout << "\n";
-        
-        root = insert(root, keys[i]);
-        printTree(root);
-    }
-    
-    deleteTree(root);
-}
-
 int main() {
-    solveProblem1();
-    solveProblem2();
-    solveProblem3();
-    
-    return 0;
+    Node* root = nullptr;
+    int choice, value;
+
+    while (true) {
+        cout << "\n1. Insert\n2. Delete\n3. Print Tree\n4. Exit\nEnter choice: ";
+        cin >> choice;
+        
+        switch (choice) {
+            case 1:
+                cout << "Enter value to insert: ";
+                cin >> value;
+                root = insert(root, value);
+                break;
+            case 2:
+                cout << "Enter value to delete: ";
+                cin >> value;
+                root = remove(root, value);
+                break;
+            case 3:
+                cout << "\nTree Structure:\n";
+                printTree(root);
+                break;t
+            case 4:
+                deleteTree(root);
+                return 0;
+            default:
+                cout << "Invalid choice! Try again.\n";
+        }
+    }
 }
