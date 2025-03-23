@@ -22,7 +22,8 @@ using namespace std;
 
 This class represents a player in the game, storing their name,
 total score, and progress in different game categories (word, logic, and math).
-It allows players to earn points, level up in different games, and save or load their progress from a file.
+It allows players to earn points, level up in different games, and save or 
+load their progress from a file.
 
 */
 
@@ -35,6 +36,19 @@ private:
     int mathGameLevel;
 
 public:
+    Player(const string& playerName);
+    void addPoints(int points);
+    int getScore() const;
+    string getName() const;
+    void increaseWordLevel();
+    void increaseLogicLevel();
+    void increaseMathLevel();
+    int getWordLevel() const;
+    int getLogicLevel() const;
+    int getMathLevel() const;
+    bool saveProgress(const string& filename);
+    bool loadProgress(const string& filename);
+
     Player(const string& playerName)
         : name(playerName), totalScore(0),
         wordGameLevel(1), logicGameLevel(1), mathGameLevel(1) {}
@@ -82,7 +96,8 @@ public:
 
 This is an abstract base class for different game types,
 defining common attributes like game name and difficulty level.
-It provides a structure for game implementation, requiring derived classes to implement the play() and showInstructions() methods.
+It provides a structure for game implementation, requiring derived classes to
+implement the play() and showInstructions() methods.
 
 */
 
@@ -92,6 +107,14 @@ protected:
     string gameName;
 
 public:
+    Game(const string& name, int diff);
+    virtual ~Game();
+    virtual void play(Player& player) = 0;
+    virtual void showInstructions() const = 0;
+    string getName() const;
+    int getDifficulty() const;
+    void setDifficulty(int diff);
+
     Game(const string& name, int diff) : gameName(name), difficulty(diff) {}
     virtual ~Game() {}
 
@@ -107,12 +130,19 @@ public:
 
 The WordGame class challenges players with word-related puzzles, including Hangman and Word Scramble.
 It maintains a list of words and their definitions, which change based on the player's level.
-The game mechanics involve guessing letters in Hangman and unscrambling words in Word Scramble, rewarding players with points for correct answers.
+The game mechanics involve guessing letters in Hangman and unscrambling words in Word Scramble, 
+rewarding players with points for correct answers.
 
 */
 
 class WordGame : public Game {
 private:
+
+    void loadWordList(int level);
+    string scrambleWord(const string& word);
+    void hangmanGame(Player& player);
+
+
     vector<string> wordList;
     vector<string> definitions;
 
@@ -304,6 +334,12 @@ private:
     }
 
 public:
+
+    WordGame(int difficulty);
+    void play(Player& player) override;
+    void showInstructions() const override;
+
+
     WordGame(int difficulty) : Game("Word Challenge", difficulty) {
         loadWordList(difficulty);
     }
@@ -351,6 +387,13 @@ Players earn points based on difficulty level when they correctly solve a puzzle
 
 class LogicGame : public Game {
 private:
+
+    template<typename T>
+    bool getInputWithTimeout(T& input, int timeoutSeconds);
+    void patternGame(Player& player);
+    void sequenceGame(Player& player);
+
+
     template<typename T>
     bool getInputWithTimeout(T& input, int timeoutSeconds) {
         atomic<bool> inputProvided(false);
@@ -359,7 +402,7 @@ private:
             cin >> input;
             inputProvided = true;
             return true;
-            });
+            } );
 
         for (int i = 0; i < timeoutSeconds; i++) {
             if (inputProvided) {
@@ -468,6 +511,12 @@ private:
     }
 
 public:
+
+    LogicGame(int difficulty);
+    void play(Player& player) override;
+    void showInstructions() const override;
+
+
     LogicGame(int difficulty) : Game("Logic Puzzles", difficulty) {}
 
     void play(Player& player) override {
@@ -514,6 +563,13 @@ The difficulty increases as the player progresses, introducing more complex calc
 
 class MathGame : public Game {
 private:
+
+    template<typename T>
+    bool getInputWithTimeout(T& input, int timeoutSeconds);
+    void arithmeticGame(Player& player);
+    void multiplicationTableGame(Player& player);
+
+
     template<typename T>
     bool getInputWithTimeout(T& input, int timeoutSeconds) {
         atomic<bool> inputProvided(false);
@@ -646,6 +702,12 @@ private:
     }
 
 public:
+
+    MathGame(int difficulty);
+    void play(Player& player) override;
+    void showInstructions() const override;
+
+
     MathGame(int difficulty) : Game("Math Masters", difficulty) {}
 
     void play(Player& player) override {
