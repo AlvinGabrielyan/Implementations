@@ -28,7 +28,7 @@ public:
 
     void unsubscribe(Observer* observer) override {
         auto it = find(observers.begin(), observers.end(), observer);
-        if (it != observers.end()) {  // Check if observer was found
+        if (it != observers.end()) { 
             observers.erase(it);
         }
     }
