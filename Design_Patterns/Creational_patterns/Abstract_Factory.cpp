@@ -1,3 +1,11 @@
+//The Abstract Factory Pattern is a creational pattern that provides an interface for creating families of related
+//or dependent objects without specifying their concrete classes.
+
+/*
+The client (main) depends on abstract interfaces (AnimalFactory, Animal) and doesn't know the concrete classes like Cat or Dog.
+It allows easy extension by adding new factories and animal types without changing the client code.
+*/
+
 #include <iostream>
 #include <memory>
 
