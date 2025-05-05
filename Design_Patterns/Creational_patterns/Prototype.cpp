@@ -1,3 +1,11 @@
+//The Prototype Design Pattern is a creational pattern used to create new objects by copying (cloning) 
+//an existing object (the prototype), rather than creating a new object from scratch.
+
+/*The meaning of this design pattern
+Objects are created by cloning existing prototypes.
+You can add, retrieve, and duplicate objects without knowing their concrete types.
+It supports the idea of dynamic object creation at runtime.*/
+
 #include <iostream>
 #include <string>
 #include <unordered_map>
@@ -45,7 +53,6 @@ private:
     unordered_map<string, Prototype*> prototypes;
 public:
     ~PrototypeManager() {
-        // Clean up dynamically allocated prototypes
         for (auto& pair : prototypes) {
             delete pair.second;
         }
