@@ -1,0 +1,21 @@
+You need exactly one object to coordinate actions across the system (e.g., configuration manager, logger, database connection).
+
+  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  1. Eager Initialization Singleton
+
+The instance is created at the time of class loading.
+Simple, thread-safe without synchronization.
+The instance is created even if it’s never used.
+
+  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  2. Lazy Initialization Singleton
+
+The instance is created only when requested (on first call).
+Saves memory/resources if the instance is never used.
+Not thread-safe by default.
+  ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   3. Thread-Safe Lazy Singleton
+
+Same as lazy, but uses synchronization (like mutex or std::call_once) to make it thread-safe.
+Safe in multi-threaded programs.
+Slight performance cost due to locking.
