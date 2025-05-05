@@ -1,3 +1,13 @@
+/*
+The purpose of this is that we can set whichever values we want using just the dot (.) operator — we’re essentially performing a cascade-style call.
+Otherwise, we’d have to set each variable in the constructor every time,
+and each time we’d have to recheck the order to avoid messing it up, etc.
+With this approach, we just set whatever we need (e.g., this.setRam().setHdd().setSSD() etc.).
+
+Finally, whatever we set in our builder gets passed into the appropriate constructor
+(the Computer class is nested here).
+*/
+
 //Սրա նպատակն էնա, որ ամեն անգամ ինչն ուզենք էդ էլ set անենք, ուղղակի ․ դնելով, մոտավոր կասկադային կանչ ենք իրականացնում,
 հակառակ դեպքում կոնստրուկտորում պետք է ամեն անգամ սեթ անեինք հերթով փոփոխականները,
 ու ամեն անգամ պետք ա վերանայենք, հերթականությունը չխախտենք և այլն, ստեղ որն ուզում ենք, էդ ենք սեթ անում։(this.setRam.setHdd.setSSD.և այլն)
